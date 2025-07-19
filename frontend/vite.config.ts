@@ -16,5 +16,11 @@ export default defineConfig({
   },
   build: {
     manifest: 'manifest.json',
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'src/main.tsx'),
+        map: resolve(__dirname, 'src/mapEntry.tsx'),
+      },
+    },
   },
 })
