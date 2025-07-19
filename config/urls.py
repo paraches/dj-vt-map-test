@@ -23,8 +23,19 @@ urlpatterns = [
     path('', include('web.urls')),
 ]
 
-# 静的ファイル配信（gunicorn等WSGIサーバ用）
+# 静的ファイル配信（gunicorn等WSGIサーバ用）＋デバッグログ
 from django.conf import settings
-from django.conf.urls.static import static
+from django.views.static import serve as original_serve
+import os
+import logging
+from django.urls import re_path
 
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+def debug_static_serve(request, path, document_root=None, show_indexes=False):
+    abs_path = os.path.join(document_root, path)
+    logging.error(f"[STATIC DEBUG] url={request.path} path={path} abs_path={abs_path}")
+    logging.error(f"[STATIC DEBUG] exists={os.path.exists(abs_path)} perms={oct(os.stat(abs_path).st_mode) if os.path.exists(abs_path) else 'N/A'}")
+    return original_serve(request, path, document_root=document_root, show_indexes=show_indexes)
+
+urlpatterns += [
+    re_path(r'^static/(?P<path>.*)$', debug_static_serve, {'document_root': settings.STATIC_ROOT}),
+]
