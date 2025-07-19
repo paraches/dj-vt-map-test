@@ -14,4 +14,7 @@ export default defineConfig({
   server: {
     cors: true,
   },
+  build: {
+    manifest: 'manifest.json',
+  },
 })
