@@ -124,14 +124,14 @@ STATIC_URL = '/static/'
 # This is needed by django-vite even in development for some path resolutions
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# ViteでビルドされたアセットをDjangoが認識できるように設定
-STATICFILES_DIRS = [
-    BASE_DIR / 'static' / 'dist',
-]
-
 # Django-Vite settings
 DJANGO_VITE_ASSETS_PATH = BASE_DIR / 'static' / 'dist'
 DJANGO_VITE_DEV_MODE = DEBUG
+
+# ViteでビルドされたアセットをDjangoが認識できるように設定
+STATICFILES_DIRS = [
+    BASE_DIR / 'frontend' / 'dist',
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
