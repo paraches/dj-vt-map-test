@@ -22,3 +22,9 @@ urlpatterns = [
     # Include the URLs from the web app
     path('', include('web.urls')),
 ]
+
+# 静的ファイル配信（gunicorn等WSGIサーバ用）
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
