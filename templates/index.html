@@ -1,0 +1,22 @@
+{% load static %}
+{% load django_vite %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="{% static 'vite.svg' %}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React + TS</title>
+      {% vite_react_refresh %}
+      {% vite_asset 'src/main.tsx' %}
+  </head>
+  <body>
+    <p>Welcome to the Vite + React + TypeScript app!</p>
+    <div id="root"></div>
+    <div style="margin-top:2em;">
+      <button onclick="window.location.href='http://localhost:5173/'">Vite Dev Serverへ</button>
+      <button onclick="window.location.href='{% url 'map' %}'">地図アプリへ</button>
+    </div>
+  </body>
+</html>

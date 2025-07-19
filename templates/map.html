@@ -1,0 +1,21 @@
+{% load django_vite %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Google Map App</title>
+    {% vite_react_refresh %}
+    {% vite_asset 'src/mapEntry.tsx' %}
+  </head>
+  <body>
+    <h2>Google Map React App</h2>
+    <div
+      id="google-map-react-container"
+      data-lat="{{ lat }}"
+      data-lng="{{ lng }}"
+      data-zoom="{{ zoom }}"
+      style="width: 100%; height: 500px; border: 1px solid #ccc;"
+    ></div>
+  </body>
+</html>
