@@ -10,7 +10,7 @@ import {
 } from '@vis.gl/react-google-maps';
 
 // ★ 型定義は types/index.ts からインポートする形に統一
-import type { RouteDisplayData, RoutePoint, PointData } from '../types';
+import type { RouteDisplayData, RoutePoint, PointData } from '@/types';
 
 // 親コンポーネント(RouteCreatorPage)と型を合わせる
 interface PointDataForMap {
@@ -67,7 +67,7 @@ const RouteRenderer: React.FC<RouteRendererProps> = ({
     routes.forEach(route => {
       if (route.points.length > 1) {
         console.log("Drawing route type:", route.routeType);
-        let path = route.points.map(p => ({ lat: p.lat, lng: p.lng }));
+        const path = route.points.map((p: RoutePoint) => ({ lat: p.lat, lng: p.lng }));
         // ★ 閉じる処理を追加
         if (route.routeType === 'place_list_ring') {
           path.push(path[0]);
@@ -102,7 +102,7 @@ const RouteRenderer: React.FC<RouteRendererProps> = ({
     // (RouteCreatorPageでのみドラッグが有効なため)
     const targetRoute = routes[routeIndex];
     if (targetRoute) {
-      const updatedPoints = targetRoute.points.map((point, index) => {
+      const updatedPoints = targetRoute.points.map((point: RoutePoint, index: number) => {
         if (index === pointIndex) {
           // ドラッグされたポイントの座標を更新
           return { ...point, lat: newPosition.lat, lng: newPosition.lng };
@@ -136,7 +136,7 @@ const RouteRenderer: React.FC<RouteRendererProps> = ({
   return (
     <>
       {routes.map((route, routeIndex) =>
-        route.points.map((point, pointIndex) => (
+        route.points.map((point: RoutePoint, pointIndex: number) => (
           <AdvancedMarker
             key={`route-${route.id}-point-${point.sequence_number}`}
             position={{ lat: point.lat, lng: point.lng }}
@@ -151,7 +151,7 @@ const RouteRenderer: React.FC<RouteRendererProps> = ({
               borderColor={'#FFFFFF'}                 // 枠線は白で見やすく
               glyphColor={'#FFFFFF'}                   // 数字の色も白
             >
-              {point.sequence_number.toString()}
+              {point.sequence_number?.toString() ?? ''}
             </Pin>
           </AdvancedMarker>
         ))

@@ -1,7 +1,5 @@
-import 'vite/modulepreload-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-// エイリアス @ を使ってコンポーネントをインポート
 import GoogleMapViewer from './components/GoogleMapViewer';
 // グローバルCSSやコンポーネント固有CSSが必要な場合はここでインポート
 // import '@/index.css'; // 例: SPAと同じグローバルスタイルを適用する場合
