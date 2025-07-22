@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'django.contrib.gis',  # GeoDjango
     'django_vite',  # Vite integration
 
     'web',  # Your app
@@ -82,11 +83,25 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
+
+# SpatiaLiteライブラリのパス（Homebrew環境例: Apple Silicon/Intelで異なる場合あり）
+import sys
+import os
+if sys.platform == "darwin":
+    # Homebrewのlibspatialiteのdylibパスを自動取得
+    import subprocess
+    try:
+        brew_prefix = subprocess.check_output(["brew", "--prefix", "libspatialite"]).decode().strip()
+        SPATIALITE_LIBRARY_PATH = os.path.join(brew_prefix, "lib", "mod_spatialite.dylib")
+    except Exception:
+        SPATIALITE_LIBRARY_PATH = "/opt/homebrew/lib/mod_spatialite.dylib"  # fallback
+else:
+    SPATIALITE_LIBRARY_PATH = "mod_spatialite"
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
