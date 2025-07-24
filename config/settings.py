@@ -81,27 +81,40 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-
-# SpatiaLiteライブラリのパス（Homebrew環境例: Apple Silicon/Intelで異なる場合あり）
-import sys
 import os
-if sys.platform == "darwin":
-    # Homebrewのlibspatialiteのdylibパスを自動取得
+
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.contrib.gis.db.backends.spatialite',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+    # SpatiaLiteライブラリのパス（Homebrew環境例: Apple Silicon/Intelで異なる場合あり）
+    import sys
     import subprocess
-    try:
-        brew_prefix = subprocess.check_output(["brew", "--prefix", "libspatialite"]).decode().strip()
-        SPATIALITE_LIBRARY_PATH = os.path.join(brew_prefix, "lib", "mod_spatialite.dylib")
-    except Exception:
-        SPATIALITE_LIBRARY_PATH = "/opt/homebrew/lib/mod_spatialite.dylib"  # fallback
+    if sys.platform == "darwin":
+        try:
+            brew_prefix = subprocess.check_output(["brew", "--prefix", "libspatialite"]).decode().strip()
+            SPATIALITE_LIBRARY_PATH = os.path.join(brew_prefix, "lib", "mod_spatialite.dylib")
+        except Exception:
+            SPATIALITE_LIBRARY_PATH = "/opt/homebrew/lib/mod_spatialite.dylib"  # fallback
+    else:
+        SPATIALITE_LIBRARY_PATH = "mod_spatialite"
 else:
-    SPATIALITE_LIBRARY_PATH = "mod_spatialite"
+    # 本番用: PostgreSQL + PostGIS (RDS)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.contrib.gis.db.backends.postgis',
+            'NAME': config('POSTGRES_DB', default='your_db_name'),
+            'USER': config('POSTGRES_USER', default='your_db_user'),
+            'PASSWORD': config('POSTGRES_PASSWORD', default='your_db_password'),
+            'HOST': config('POSTGRES_HOST', default='your-db-instance.xxxxx.ap-northeast-1.rds.amazonaws.com'),
+            'PORT': config('POSTGRES_PORT', default='5432'),
+            # 'OPTIONS': {'sslmode': 'require'},  # 必要に応じて
+        }
+    }
+    # 本番用はSpatiaLiteの設定不要
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
